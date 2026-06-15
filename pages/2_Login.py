@@ -30,6 +30,8 @@ if st.button("Login"):
 
             st.session_state["user_name"] = user["full_name"]
 
+            st.session_state["email"] = user["email"]
+
             st.success(
                 f"Selamat datang {user['full_name']}"
             )

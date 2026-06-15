@@ -164,3 +164,144 @@ def get_recent_predictions(user_id, limit=5):
     conn.close()
 
     return data
+
+def get_dashboard_stats(user_id):
+    conn = get_connection()
+
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+    SELECT
+        COUNT(*) AS total_analysis,
+        AVG(debt_ratio) AS avg_debt_ratio,
+        AVG(saving_rate) AS avg_saving_rate
+    FROM prediction_history
+    WHERE user_id = %s
+    """
+
+    cursor.execute(query, (user_id,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return result
+
+def save_chat_message(
+    user_id,
+    role,
+    message
+):
+    conn = get_connection()
+
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO chat_history
+    (
+        user_id,
+        role,
+        message
+    )
+    VALUES (%s,%s,%s)
+    """
+
+    cursor.execute(
+        query,
+        (
+            user_id,
+            role,
+            message
+        )
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+def get_chat_history(user_id):
+    conn = get_connection()
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
+
+    query = """
+    SELECT *
+    FROM chat_history
+    WHERE user_id = %s
+    ORDER BY created_at ASC
+    """
+
+    cursor.execute(
+        query,
+        (user_id,)
+    )
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return data
+
+def create_goal(
+    user_id,
+    goal_name,
+    target_amount
+):
+    conn = get_connection()
+
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO financial_goals
+    (
+        user_id,
+        goal_name,
+        target_amount
+    )
+    VALUES (%s,%s,%s)
+    """
+
+    cursor.execute(
+        query,
+        (
+            user_id,
+            goal_name,
+            target_amount
+        )
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+def get_goals(user_id):
+
+    conn = get_connection()
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
+
+    query = """
+    SELECT *
+    FROM financial_goals
+    WHERE user_id = %s
+    """
+
+    cursor.execute(
+        query,
+        (user_id,)
+    )
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return data
