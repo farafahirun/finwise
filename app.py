@@ -1,13 +1,12 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import base64
 from db import save_prediction
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
-
 model_path = BASE_DIR / "models" / "random_forest.pkl"
-
 model = joblib.load(model_path)
 
 st.set_page_config(
@@ -15,6 +14,13 @@ st.set_page_config(
     page_icon="💎",
     layout="centered"
 )
+
+try:
+    with open("logo.png", "rb") as image_file:
+        encoded_logo = base64.b64encode(image_file.read()).decode()
+    logo_html = f'<img src="data:image/png;base64,{encoded_logo}" style="height: 180px; width: auto; object-fit: contain; margin-top: -20px; margin-bottom: -30px;">'
+except FileNotFoundError:
+    logo_html = ""
 
 st.markdown('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">', unsafe_allow_html=True)
 
@@ -25,23 +31,23 @@ st.markdown("""
     }
     
     div.stButton > button:first-child {
-        background-color: #1E3A8A;
+        background: linear-gradient(135deg, #0A2540 0%, #1E3A8A 100%);
         color: white;
-        border-radius: 10px;
-        padding: 0.6rem 2.5rem;
+        border-radius: 12px;
+        padding: 0.7rem 2.5rem;
         font-weight: 600;
         font-size: 16px;
         border: none;
-        box-shadow: 0px 4px 12px rgba(30, 58, 138, 0.2);
+        box-shadow: 0px 4px 15px rgba(10, 37, 64, 0.2);
         transition: all 0.3s ease;
         width: 100%;
         margin-top: 15px;
     }
     
     div.stButton > button:first-child:hover {
-        background-color: #3B82F6;
-        box-shadow: 0px 6px 20px rgba(59, 130, 246, 0.4);
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, #00b289 0%, #008060 100%);
+        box-shadow: 0px 6px 20px rgba(0, 178, 137, 0.4);
+        transform: translateY(-1.5px);
     }
     
     [data-testid="stContainer"] {
@@ -52,43 +58,32 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
     }
 
-    .logo-container {
+    .brand-header-container {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 15px;
-        margin-bottom: 5px;
-    }
-    
-    .main-title {
-        color: #0F172A;
-        font-size: 36px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        margin: 0;
+        text-align: center;
+        margin-top: 0px;
+        padding: 0px;
     }
     
     .subtitle-text {
         color: #64748B;
         font-size: 16px;
         font-weight: 400;
-        margin-top: -5px;
+        margin-top: 10px;
         margin-bottom: 25px;
+        text-align: center;
     }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-    <div class="logo-container">
-        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#1E3A8A"/>
-            <path d="M2 17L12 22L22 17" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h1 class="main-title">FINWISE</h1>
+st.markdown(f"""
+    <div class="brand-header-container">
+        {logo_html}
+        <p class="subtitle-text">Quick Financial Assessment Dashboard</p>
     </div>
 """, unsafe_allow_html=True)
-
-st.markdown('<p class="subtitle-text">Quick Financial Assessment Dashboard</p>', unsafe_allow_html=True)
 
 with st.container(border=True):
     col1, col2 = st.columns(2)
@@ -131,19 +126,11 @@ with st.container(border=True):
             min_value=0,
             value=0
         )
+
 if st.button("Analisis Sekarang"):
-
     debt_ratio = utang / pendapatan if pendapatan > 0 else 0
-
-    expense_ratio = (
-        pengeluaran / pendapatan
-        if pendapatan > 0 else 0
-    )
-
-    saving_rate = (
-        tabungan / pendapatan
-        if pendapatan > 0 else 0
-    )
+    expense_ratio = pengeluaran / pendapatan if pendapatan > 0 else 0
+    saving_rate = tabungan / pendapatan if pendapatan > 0 else 0
 
     data = pd.DataFrame([
         {
@@ -168,8 +155,8 @@ if st.button("Analisis Sekarang"):
     }
 
     predicted_label = label_map[prediction]
-
     user_id = st.session_state.get("user_id")
+    
     save_prediction(
         user_id,
         umur,
@@ -200,7 +187,4 @@ if st.button("Analisis Sekarang"):
     m3.metric(label="Saving Rate", value=f"{saving_rate:.2f}")
 
 st.divider()
-
-st.caption(
-    "FINWISE • AI-Powered Financial Intelligence"
-)
+st.caption("FINWISE • AI-Powered Financial Intelligence")
