@@ -124,3 +124,9 @@ if st.button("Login"):
     else:
 
         st.error("Email tidak ditemukan")
+
+st.divider()
+
+st.caption(
+    "FINWISE • AI-Powered Financial Intelligence"
+)

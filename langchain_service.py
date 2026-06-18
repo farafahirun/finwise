@@ -1,24 +1,56 @@
-from langchain_groq import ChatGroq
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationChain
-
 from dotenv import load_dotenv
 import os
+
+from langchain_groq import ChatGroq
+from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
 llm = ChatGroq(
-    groq_api_key=os.getenv("GROQ_API_KEY"),
-    model="llama-3.3-70b-versatile"
+    model="llama-3.3-70b-versatile",
+    api_key=os.getenv("GROQ_API_KEY"),
+    temperature=0.5
 )
 
-memory = ConversationBufferMemory()
+prompt_template = PromptTemplate.from_template("""
+Anda adalah AI Financial Advisor FINWISE.
 
-conversation = ConversationChain(
-    llm=llm,
-    memory=memory,
-    verbose=False
-)
+=== DATA PENGGUNA ===
 
-def ask_langchain(question):
-    return conversation.predict(input=question)
+{financial_context}
+
+=== PENGETAHUAN KEUANGAN ===
+
+{knowledge_context}
+
+=== PERTANYAAN PENGGUNA ===
+
+{question}
+
+Instruksi:
+
+1. Gunakan data pengguna sebagai prioritas utama.
+2. Gunakan pengetahuan keuangan untuk memperkuat rekomendasi.
+3. Berikan jawaban yang personal.
+4. Jangan menghakimi pengguna.
+5. Berikan langkah praktis yang dapat dilakukan.
+""")
+
+chain = prompt_template | llm
+
+
+def ask_langchain(
+    financial_context,
+    knowledge_context,
+    question
+):
+
+    response = chain.invoke(
+        {
+            "financial_context": financial_context,
+            "knowledge_context": knowledge_context,
+            "question": question
+        }
+    )
+
+    return response.content

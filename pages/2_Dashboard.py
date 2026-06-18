@@ -2,10 +2,13 @@ import streamlit as st
 import pandas as pd
 from report_generator import generate_report
 from financial_score import calculate_score
+from langchain_service import ask_langchain
+from knowledge_loader import load_knowledge
 
 from db import (
     get_user_prediction_history,
-    get_dashboard_stats
+    get_dashboard_stats,
+    get_goal_summary
 )
 
 if not st.session_state.get("logged_in"):
@@ -136,8 +139,23 @@ else:
 
 stats = get_dashboard_stats(user_id)
 
+goal_summary = get_goal_summary(
+    user_id
+)
+
 if df.empty:
-    st.warning("Belum ada data prediksi.")
+
+    st.info(
+        """
+        👋 Selamat datang di FINWISE.
+
+        Anda belum memiliki riwayat analisis.
+
+        Silakan lakukan analisis pertama
+        untuk mulai memantau kondisi
+        keuangan Anda.
+        """
+    )
 else:
 
     latest_label = df.iloc[0]["predicted_label"]
@@ -231,7 +249,6 @@ else:
                     file_name="FINWISE_Report.pdf",
                     mime="application/pdf"
                 )
-
     st.divider()
 
     st.markdown("""
@@ -250,6 +267,29 @@ else:
     col2.metric("Risiko Terakhir", latest_label)
     col3.metric("Avg Debt Ratio", round(stats["avg_debt_ratio"], 2))
     col4.metric("Avg Saving Rate", round(stats["avg_saving_rate"], 2))
+
+    if goal_summary:
+
+        st.subheader(
+            "🎯 Financial Goals Summary"
+        )
+
+        st.info(
+            f"""
+            Total Goal Aktif:
+            {goal_summary['total_goals']}
+
+            Goal Terdekat:
+            {goal_summary['closest_goal']['goal_name']}
+            ({goal_summary['closest_goal']['progress']:.2f}%)
+
+            Goal Terjauh:
+            {goal_summary['farthest_goal']['goal_name']}
+            ({goal_summary['farthest_goal']['progress']:.2f}%)
+            """
+        )
+
+        st.divider()
 
     if latest_label == "Aman":
         st.success("Kondisi keuangan Anda saat ini tergolong aman. Pertahankan kebiasaan menabung dan kontrol pengeluaran.")
@@ -306,7 +346,6 @@ else:
     saving_chart = df[["created_at", "saving_rate"]].copy()
     saving_chart = saving_chart.sort_values(by="created_at").set_index("created_at")
     st.line_chart(saving_chart, use_container_width=True)
-
     st.markdown("""
         <div class="section-title-container">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -315,16 +354,16 @@ else:
                 <line x1="16" y1="13" x2="8" y2="13"></line>
                 <line x1="16" y1="17" x2="8" y2="17"></line>
                 <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            <h2 class="section-title">Riwayat Prediksi</h2>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    if latest_label == "Aman":
-        st.success(f"Status Terakhir Anda: {latest_label}")
-    elif latest_label == "Waspada":
-        st.warning(f"Status Terakhir Anda: {latest_label}")
-    else:
-        st.error(f"Status Terakhir Anda: {latest_label}")
-        
-    st.dataframe(df, use_container_width=True)
+        label="⬇ Export CSV",
+        data=csv,
+        file_name="prediction_history.csv",
+        mime="text/csv"
+    )
+
+    st.dataframe(df)
+
+st.divider()
+
+st.caption(
+    "FINWISE • AI-Powered Financial Intelligence"
+)

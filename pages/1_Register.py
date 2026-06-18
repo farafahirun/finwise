@@ -107,3 +107,9 @@ if st.button("Daftar Sekarang"):
         st.success("✨ Registrasi berhasil! Silakan menuju halaman Login.")
     else:
         st.error("Mohon lengkapi semua bidang di atas!")
+
+st.divider()
+
+st.caption(
+    "FINWISE • AI-Powered Financial Intelligence"
+)

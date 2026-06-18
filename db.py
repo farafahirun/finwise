@@ -250,7 +250,9 @@ def get_chat_history(user_id):
 def create_goal(
     user_id,
     goal_name,
-    target_amount
+    target_amount,
+    current_amount,
+    monthly_saving
 ):
     conn = get_connection()
 
@@ -261,9 +263,10 @@ def create_goal(
     (
         user_id,
         goal_name,
-        target_amount
+        target_amount,
+        current_amount
     )
-    VALUES (%s,%s,%s)
+    VALUES (%s,%s,%s,%s)
     """
 
     cursor.execute(
@@ -271,7 +274,8 @@ def create_goal(
         (
             user_id,
             goal_name,
-            target_amount
+            target_amount,
+            current_amount
         )
     )
 
@@ -305,3 +309,109 @@ def get_goals(user_id):
     conn.close()
 
     return data
+
+def delete_goal(goal_id):
+
+    conn = get_connection()
+
+    cursor = conn.cursor()
+
+    query = """
+    DELETE FROM financial_goals
+    WHERE goal_id = %s
+    """
+
+    cursor.execute(
+        query,
+        (goal_id,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+def delete_chat_history(user_id):
+
+    conn = get_connection()
+
+    cursor = conn.cursor()
+
+    query = """
+    DELETE FROM chat_history
+    WHERE user_id = %s
+    """
+
+    cursor.execute(
+        query,
+        (user_id,)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+def add_goal_saving(
+    goal_id,
+    amount
+):
+
+    conn = get_connection()
+
+    cursor = conn.cursor()
+
+    query = """
+    UPDATE financial_goals
+    SET current_amount =
+        current_amount + %s
+    WHERE goal_id = %s
+    """
+
+    cursor.execute(
+        query,
+        (amount, goal_id)
+    )
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+def get_goal_summary(user_id):
+
+    goals = get_goals(user_id)
+
+    if not goals:
+        return None
+
+    for goal in goals:
+
+        target = float(
+            goal["target_amount"]
+        )
+
+        current = float(
+            goal["current_amount"]
+        )
+
+        goal["progress"] = (
+            current / target * 100
+            if target > 0 else 0
+        )
+
+    closest_goal = max(
+        goals,
+        key=lambda x: x["progress"]
+    )
+
+    farthest_goal = min(
+        goals,
+        key=lambda x: x["progress"]
+    )
+
+    return {
+        "total_goals": len(goals),
+        "closest_goal": closest_goal,
+        "farthest_goal": farthest_goal
+    }

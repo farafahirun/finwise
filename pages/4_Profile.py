@@ -166,3 +166,9 @@ with logout_col2:
     if st.button("🚪 Logout"):
         st.session_state.clear()
         st.switch_page("app.py")
+
+st.divider()
+
+st.caption(
+    "FINWISE • AI-Powered Financial Intelligence"
+)

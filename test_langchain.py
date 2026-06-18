@@ -1,13 +1,9 @@
 from langchain_service import ask_langchain
 
-print(
-    ask_langchain(
-        "Nama saya Elysa"
-    )
+result = ask_langchain(
+    "Debt Ratio: 0.5",
+    "Debt ratio ideal di bawah 0.3",
+    "Bagaimana kondisi saya?"
 )
 
-print(
-    ask_langchain(
-        "Siapa nama saya?"
-    )
-)
+print(result)

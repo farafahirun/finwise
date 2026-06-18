@@ -198,3 +198,9 @@ if st.button("Analisis Sekarang"):
     m1.metric(label="Debt Ratio", value=f"{debt_ratio:.2f}")
     m2.metric(label="Expense Ratio", value=f"{expense_ratio:.2f}")
     m3.metric(label="Saving Rate", value=f"{saving_rate:.2f}")
+
+st.divider()
+
+st.caption(
+    "FINWISE • AI-Powered Financial Intelligence"
+)

@@ -7,7 +7,6 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet
 from datetime import datetime
 
-
 def generate_report(
     filename,
     user_name,
@@ -16,7 +15,8 @@ def generate_report(
     avg_saving_rate,
     latest_label,
     recommendation,
-    history_text
+    history_text,
+    ai_summary
 ):
 
     doc = SimpleDocTemplate(filename)
@@ -98,6 +98,24 @@ def generate_report(
 
     content.append(
         Spacer(1, 20)
+    )
+
+    content.append(
+        Spacer(1, 20)
+    )
+
+    content.append(
+        Paragraph(
+            "AI Financial Summary",
+            styles["Heading2"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            ai_summary,
+            styles["Normal"]
+        )
     )
 
     content.append(
