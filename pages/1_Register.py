@@ -2,11 +2,10 @@ import streamlit as st
 import hashlib
 from db import create_user
 
-st.set_page_config(
-    page_title="Register - FINWISE",
-    page_icon="📝",
-    layout="centered"
-)
+st.set_page_config(page_title="Register - FINWISE", page_icon="📝", layout="centered")
+
+
+
 
 st.markdown('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">', unsafe_allow_html=True)
 

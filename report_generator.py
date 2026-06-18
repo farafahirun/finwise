@@ -7,6 +7,27 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet
 from datetime import datetime
 
+
+def _add_text_block(content, title, text, styles):
+    content.append(
+        Paragraph(
+            title,
+            styles["Heading2"]
+        )
+    )
+
+    content.append(
+        Paragraph(
+            text.replace("\n", "<br/>"),
+            styles["Normal"]
+        )
+    )
+
+    content.append(
+        Spacer(1, 20)
+    )
+
+
 def generate_report(
     filename,
     user_name,
@@ -16,7 +37,9 @@ def generate_report(
     latest_label,
     recommendation,
     history_text,
-    ai_summary
+    ai_summary="",
+    monthly_review_text="",
+    ai_monthly_review=""
 ):
 
     doc = SimpleDocTemplate(filename)
@@ -82,54 +105,42 @@ def generate_report(
         Spacer(1, 20)
     )
 
-    content.append(
-        Paragraph(
-            "Rekomendasi AI",
-            styles["Heading2"]
-        )
+    _add_text_block(
+        content,
+        "Rekomendasi AI",
+        recommendation,
+        styles
     )
 
-    content.append(
-        Paragraph(
-            recommendation,
-            styles["Normal"]
-        )
-    )
-
-    content.append(
-        Spacer(1, 20)
-    )
-
-    content.append(
-        Spacer(1, 20)
-    )
-
-    content.append(
-        Paragraph(
+    if ai_summary:
+        _add_text_block(
+            content,
             "AI Financial Summary",
-            styles["Heading2"]
-        )
-    )
-
-    content.append(
-        Paragraph(
             ai_summary,
-            styles["Normal"]
+            styles
         )
-    )
 
-    content.append(
-        Paragraph(
-            "Riwayat Prediksi",
-            styles["Heading2"]
+    if monthly_review_text:
+        _add_text_block(
+            content,
+            "Monthly Financial Review",
+            monthly_review_text,
+            styles
         )
-    )
 
-    content.append(
-        Paragraph(
-            history_text.replace("\n", "<br/>"),
-            styles["Normal"]
+    if ai_monthly_review:
+        _add_text_block(
+            content,
+            "AI Monthly Review",
+            ai_monthly_review,
+            styles
         )
+
+    _add_text_block(
+        content,
+        "Riwayat Prediksi",
+        history_text,
+        styles
     )
 
     doc.build(content)

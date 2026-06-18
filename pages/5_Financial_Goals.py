@@ -20,6 +20,10 @@ from emergency_fund import (
     calculate_emergency_fund
 )
 
+from achievement_system import (
+    get_goal_badge
+)
+
 if not st.session_state.get("logged_in"):
     st.stop()
 
@@ -200,6 +204,10 @@ for goal in goals:
     st.metric(
         "Progress",
         f"{progress_percent}%"
+    )
+
+    st.success(
+        f"🏅 Goal Badge: {get_goal_badge(progress_percent)}"
     )
 
     st.progress(progress)

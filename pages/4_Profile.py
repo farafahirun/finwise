@@ -1,5 +1,8 @@
 import streamlit as st
 
+st.set_page_config(page_title="Profile - FINWISE", page_icon="👤", layout="centered")
+
+
 from db import (
     get_dashboard_stats
 )
@@ -8,11 +11,7 @@ if not st.session_state.get("logged_in"):
     st.warning("Silakan login terlebih dahulu.")
     st.stop()
 
-st.set_page_config(
-    page_title="Profile - FINWISE",
-    page_icon="👤",
-    layout="centered"
-)
+
 
 st.markdown('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap">', unsafe_allow_html=True)
 
