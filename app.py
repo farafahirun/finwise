@@ -187,6 +187,49 @@ transition: 0.3s !important;
 .stButton > button:hover {
 opacity: 0.9 !important;
 }
+/* Responsiveness / Mobile Optimization */
+@media screen and (max-width: 768px) {
+    .landing-nav {
+        padding: 12px 20px;
+    }
+    .landing-nav a {
+        margin-left: 10px;
+        font-size: 12px;
+    }
+    .hero-section {
+        flex-direction: column;
+        padding: 120px 20px 40px 20px;
+        text-align: center;
+    }
+    .hero-content {
+        max-width: 100%;
+        margin-bottom: 40px;
+    }
+    .hero-title {
+        font-size: 32px;
+    }
+    .hero-desc {
+        font-size: 16px;
+    }
+    .hero-visual {
+        justify-content: center;
+    }
+    .features-section {
+        padding: 40px 20px;
+    }
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    .btn-mulai, .btn-secondary {
+        display: block;
+        width: 100%;
+        margin-right: 0 !important;
+        margin-bottom: 12px;
+    }
+    .glass-modal {
+        padding: 16px;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 

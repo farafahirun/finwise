@@ -273,6 +273,48 @@ def apply_ui_style():
     
 
                 
+        /* Global Mobile Responsiveness */
+        @media screen and (max-width: 768px) {{
+            .hero-top-row {{
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }}
+            .hero-welcome-box {{
+                flex-direction: row;
+                gap: 12px;
+            }}
+            .profile-avatar {{
+                width: 60px;
+                height: 60px;
+            }}
+            .hero-welcome {{
+                font-size: 24px;
+            }}
+            .dashboard-hero {{
+                padding: 20px;
+            }}
+            .fw-metric-card {{
+                padding: 16px;
+            }}
+            .fw-metric-value {{
+                font-size: 28px;
+            }}
+            .page-hero {{
+                padding: 16px;
+                flex-direction: column;
+            }}
+            .page-hero-title {{
+                font-size: 22px;
+            }}
+            .hero-stats {{
+                flex-direction: column;
+                gap: 12px;
+            }}
+            .hero-stat-item {{
+                width: 100%;
+            }}
+        }}
     
             </style>
     """, unsafe_allow_html=True)
