@@ -8,9 +8,9 @@ def get_cashflow_forecast(df):
     if df.empty:
         return None
         
-    latest_pendapatan = df.iloc[0].get("pendapatan_bulanan", 0)
-    latest_pengeluaran = df.iloc[0].get("pengeluaran_bulanan", 0)
-    debt_ratio = df.iloc[0].get("debt_ratio", 0)
+    latest_pendapatan = float(df.iloc[0].get("pendapatan_bulanan", 0))
+    latest_pengeluaran = float(df.iloc[0].get("pengeluaran_bulanan", 0))
+    debt_ratio = float(df.iloc[0].get("debt_ratio", 0))
     
     # Calculate monthly debt payment from debt_ratio
     cicilan_utang = latest_pendapatan * debt_ratio
@@ -37,10 +37,10 @@ def get_future_balance_projection(df):
     if df.empty:
         return None
         
-    current_balance = df.iloc[0].get("total_tabungan", 0)
-    latest_pendapatan = df.iloc[0].get("pendapatan_bulanan", 0)
-    latest_pengeluaran = df.iloc[0].get("pengeluaran_bulanan", 0)
-    debt_ratio = df.iloc[0].get("debt_ratio", 0)
+    current_balance = float(df.iloc[0].get("total_tabungan", 0))
+    latest_pendapatan = float(df.iloc[0].get("pendapatan_bulanan", 0))
+    latest_pengeluaran = float(df.iloc[0].get("pengeluaran_bulanan", 0))
+    debt_ratio = float(df.iloc[0].get("debt_ratio", 0))
     
     cicilan_utang = latest_pendapatan * debt_ratio
     monthly_saving = latest_pendapatan - latest_pengeluaran - cicilan_utang
@@ -65,9 +65,9 @@ def get_cashflow_trend(df):
         
     recent_savings = []
     for idx, row in df.head(3).iterrows():
-        p = row.get("pendapatan_bulanan", 0)
-        e = row.get("pengeluaran_bulanan", 0)
-        d = p * row.get("debt_ratio", 0)
+        p = float(row.get("pendapatan_bulanan", 0))
+        e = float(row.get("pengeluaran_bulanan", 0))
+        d = p * float(row.get("debt_ratio", 0))
         recent_savings.append(p - e - d)
         
     # Bandingkan bulan terbaru (index 0) dengan sebelumnya (index 1)
@@ -86,7 +86,7 @@ def get_income_stability(df):
     if len(df) < 3:
         return "Stable" # Default if not enough data
         
-    incomes = df.head(6)["pendapatan_bulanan"].tolist()
+    incomes = [float(x) for x in df.head(6)["pendapatan_bulanan"].tolist()]
     if len(incomes) < 2:
         return "Stable"
         
@@ -112,9 +112,9 @@ def get_stress_test(df):
     if df.empty:
         return None
         
-    latest_pendapatan = df.iloc[0].get("pendapatan_bulanan", 0)
-    latest_pengeluaran = df.iloc[0].get("pengeluaran_bulanan", 0)
-    debt_ratio = df.iloc[0].get("debt_ratio", 0)
+    latest_pendapatan = float(df.iloc[0].get("pendapatan_bulanan", 0))
+    latest_pengeluaran = float(df.iloc[0].get("pengeluaran_bulanan", 0))
+    debt_ratio = float(df.iloc[0].get("debt_ratio", 0))
     
     cicilan_utang = latest_pendapatan * debt_ratio
     
@@ -149,15 +149,15 @@ def get_resilience_score(df):
     if df.empty:
         return 0
         
-    latest_pendapatan = df.iloc[0].get("pendapatan_bulanan", 0)
-    latest_pengeluaran = df.iloc[0].get("pengeluaran_bulanan", 0)
-    latest_tabungan = df.iloc[0].get("total_tabungan", 0)
-    latest_tanggungan = df.iloc[0].get("jumlah_tanggungan", 0)
+    latest_pendapatan = float(df.iloc[0].get("pendapatan_bulanan", 0))
+    latest_pengeluaran = float(df.iloc[0].get("pengeluaran_bulanan", 0))
+    latest_tabungan = float(df.iloc[0].get("total_tabungan", 0))
+    latest_tanggungan = int(df.iloc[0].get("jumlah_tanggungan", 0))
     
-    saving_rate = df.iloc[0].get("saving_rate", 0)
-    debt_ratio = df.iloc[0].get("debt_ratio", 0)
+    saving_rate = float(df.iloc[0].get("saving_rate", 0))
+    debt_ratio = float(df.iloc[0].get("debt_ratio", 0))
     
-    ideal_emergency = calculate_emergency_fund(latest_pengeluaran, latest_tanggungan)
+    ideal_emergency = float(calculate_emergency_fund(latest_pengeluaran, latest_tanggungan))
     
     # 1. Emergency Fund Score (Max 40)
     if ideal_emergency > 0:

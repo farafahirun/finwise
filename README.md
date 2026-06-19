@@ -1,162 +1,64 @@
-# FINWISE 💰
+# FINWISE: Your Autonomous AI Financial Advisor
 
-FINWISE adalah aplikasi Personal Finance Intelligence berbasis Artificial Intelligence dan Machine Learning yang membantu pengguna menganalisis kondisi keuangan, memantau kesehatan finansial, menetapkan target keuangan, serta memperoleh rekomendasi yang dipersonalisasi.
+FINWISE is a comprehensive, AI-driven personal financial management and advisory platform. By combining traditional financial metrics with advanced machine learning (Random Forest) and generative AI (Llama-3 via LangChain), FINWISE acts as your personal CFO, Coach, and Financial Planner.
 
-## Highlights
+## 🌟 Overview
+FINWISE moves beyond simple expense tracking. It predicts financial risks, assesses your holistic financial health, identifies your behavioral persona, and generates real-time, actionable coaching plans. Whether you are a "Student Saver" or a "Wealth Builder", FINWISE adapts its roadmap to your life stage.
 
-- User registration, login, dan session management
-- Financial risk assessment berbasis Machine Learning
-- Dashboard analitik untuk health score, tren, dan histori prediksi
-- AI Financial Advisor dengan knowledge base dan riwayat chat
-- Financial goals tracker dan emergency fund planner
-- PDF report generator untuk ringkasan kondisi finansial
+## 🚀 Features
+- **Authentication**: Secure user login and registration.
+- **Financial Assessment**: Deep dive into your monthly cashflow.
+- **Random Forest Risk Prediction**: ML-based early warning system for bankruptcy or debt traps.
+- **Dashboard Analytics**: Comprehensive visualization of your financial trajectory.
+- **Financial Health Score**: Composite score evaluating debt, savings, and expenses.
+- **Financial Goals & Emergency Fund Planner**: Track your dreams with smart prioritization.
+- **AI Personalized Coach & AI Advisor**: Conversational LangChain agent acting as a Certified Financial Planner.
+- **Financial Benchmarking & Maturity Level**: Compare your stats against ideal standards.
+- **Cashflow Intelligence Suite**: Forecast future balances based on historical trends.
+- **Smart Budgeting & Habit Tracking**: Enforce discipline with streak tracking.
+- **Gamification (XP, Levels, Challenges)**: Earn badges and XP by completing weekly financial challenges.
+- **AI Life Planning & Financial Roadmap**: Generate 1, 3, and 5-year life plans.
+- **Investment Readiness Analysis**: Gatekeeper to ensure you are safe before investing.
+- **Financial Education Hub**: Tailor-made learning curriculum based on your financial weaknesses.
+- **Advanced Financial Simulation**: "What-If" scenario planning (e.g., +20% income, debt payoffs).
+- **PDF Reporting**: End-of-month holistic PDF export.
 
-## Features
+## 🛠 Technology Stack
+- **Frontend**: Streamlit (Python)
+- **Backend**: Python 3.10+
+- **Database**: MySQL (Relational Data Persistence)
+- **Machine Learning**: Scikit-Learn (Random Forest Classifier)
+- **AI / LLM**: LangChain, ChatGroq (Llama-3 70B/8B)
+- **PDF Generation**: ReportLab
+- **Data Analysis**: Pandas, NumPy
 
-### Authentication
+## 🏗 Architecture
+FINWISE is built on a modular architecture:
+1.  **Presentation Layer**: Streamlit pages (`pages/*.py`).
+2.  **Logic & Engine Layer**: Modularized engines (`xp_engine.py`, `roadmap_engine.py`, `investment_engine.py`, `learning_engine.py`, `persona_engine.py`, `challenge_engine.py`).
+3.  **Intelligence Layer**: `model_trainer.py` (Random Forest) and `langchain_service.py` (LLM Integration).
+4.  **Data Access Layer**: `db.py` (MySQL CRUD operations).
 
-- User Registration
-- User Login
-- Session Management
-- Profile Page
+## 💻 Installation
+1.  Clone the repository.
+2.  Create a virtual environment: `python -m venv venv`
+3.  Activate the environment: `source venv/bin/activate` (Linux/Mac) or `venv\Scripts\activate` (Windows).
+4.  Install dependencies: `pip install -r requirements.txt`
+5.  Set up environment variables: `cp .env.example .env` and fill in your `GROQ_API_KEY` and MySQL credentials.
 
-### Financial Risk Assessment
+## 🗄 Database Setup
+1.  Ensure MySQL is running.
+2.  Create database: `CREATE DATABASE finwise;`
+3.  Run all SQL migrations located in the root directory.
 
-- Analisis kondisi keuangan menggunakan Machine Learning
-- Prediksi kategori risiko: Aman, Waspada, Berbahaya
-- Penyimpanan hasil analisis ke database
+## 🧠 AI & Machine Learning Components
+- **Machine Learning**: A pre-trained Random Forest model (`financial_risk_model.pkl`) evaluates 3 core features (Debt Ratio, Expense Ratio, Saving Rate) to classify users into "Aman", "Waspada", or "Berbahaya".
+- **Generative AI**: Groq's Llama-3 model acts as the brain for the AI Coach, utilizing dynamic context prompts assembled by the various engines.
 
-### Dashboard Analytics
+## 🔮 Future Development
+- Integration with live bank APIs (Open Banking).
+- Joint/Family accounts for household financial planning.
+- Complex compound interest simulators for stock/crypto portfolios.
 
-- Financial Health Score
-- Debt Ratio Analysis
-- Saving Rate Analysis
-- Risk Distribution
-- Trend Analysis
-- Prediction History
-
-### AI Financial Advisor
-
-- AI Chat Assistant
-- Personalized Recommendation
-- Knowledge Base (RAG)
-- Persistent Chat History
-
-### Financial Planning
-
-- Financial Goals Tracker
-- Emergency Fund Planner
-- Goal Progress Monitoring
-
-### Reporting
-
-- PDF Financial Report
-- Financial Summary Generator
-
-## Technology Stack
-
-### Frontend
-
-- Streamlit
-
-### Backend
-
-- Python
-
-### Database
-
-- MySQL
-
-### Machine Learning
-
-- Scikit-Learn
-- Random Forest Classifier
-
-### AI
-
-- Groq API
-- Retrieval Augmented Generation (RAG)
-
-### Reporting
-
-- ReportLab
-
-## Machine Learning Features
-
-Model FINWISE menggunakan indikator finansial berikut:
-
-- Umur
-- Pendapatan bulanan
-- Pengeluaran bulanan
-- Total tabungan
-- Total utang
-- Jumlah tanggungan
-- Debt ratio
-- Expense ratio
-- Saving rate
-
-Output klasifikasi:
-
-- Aman
-- Waspada
-- Berbahaya
-
-## System Workflow
-
-```mermaid
-flowchart TD
-    A[User Input] --> B[Feature Engineering]
-    B --> C[Machine Learning Prediction]
-    C --> D[Database Storage]
-    D --> E[Dashboard Analytics]
-    D --> F[AI Financial Advisor]
-    E --> G[Financial Recommendation]
-    F --> G
-```
-
-## Project Structure
-
-```text
-finwise/
-├── README.md
-├── docs/
-│   ├── architecture.md
-│   ├── database.md
-│   ├── machine_learning.md
-│   ├── ai_advisor.md
-│   └── features.md
-├── app.py
-├── db.py
-├── ai_service.py
-├── financial_score.py
-├── emergency_fund.py
-├── goal_advisor.py
-├── knowledge_loader.py
-├── langchain_service.py
-├── report_generator.py
-├── pages/
-│   ├── 1_Register.py
-│   ├── 2_Login.py
-│   ├── 2_Dashboard.py
-│   ├── 3_AI_Advisor.py
-│   ├── 4_Profile.py
-│   └── 5_Financial_Goals.py
-├── ml/
-│   ├── predict.py
-│   └── train_model.py
-├── models/
-├── data/
-└── knowledge/
-```
-
-## Future Development
-
-- Vector database integration
-- Advanced RAG pipeline
-- Investment recommendation
-- Financial forecasting
-- Mobile application version
-
-## Author
-
-Developed by Fara Rahmasari Fahirun.
+---
+*Built with ❤️ by the FINWISE Team.*

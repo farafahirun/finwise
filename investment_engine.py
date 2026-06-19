@@ -18,8 +18,8 @@ def calculate_investment_readiness(df, health_score):
     barriers = []
     
     # 1. Emergency Fund (25%)
-    ef = latest.get('total_tabungan', 0)
-    exp = latest.get('pengeluaran_bulanan', 0)
+    ef = float(latest.get('total_tabungan', 0))
+    exp = float(latest.get('pengeluaran_bulanan', 0))
     if exp > 0:
         ratio = ef / (exp * 6) # Target ideal 6 bulan untuk investasi super aman
         c_ef = min(ratio * 25, 25)
@@ -29,7 +29,7 @@ def calculate_investment_readiness(df, health_score):
         c_ef = 12.5
         
     # 2. Debt Ratio (25%)
-    dr = latest.get('debt_ratio', 0)
+    dr = float(latest.get('debt_ratio', 0))
     if dr == 0: c_debt = 25
     elif dr <= 0.3: c_debt = 15
     elif dr <= 0.4: 
@@ -40,7 +40,7 @@ def calculate_investment_readiness(df, health_score):
         barriers.append("Rasio utang terlalu tinggi (berbahaya). Fokus lunasi utang dulu.")
         
     # 3. Saving Rate (20%)
-    sr = latest.get('saving_rate', 0)
+    sr = float(latest.get('saving_rate', 0))
     if sr >= 0.2: c_sr = 20
     elif sr >= 0.1: 
         c_sr = 10

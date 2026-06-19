@@ -94,14 +94,14 @@ def generate_report(
 
     content.append(
         Paragraph(
-            f"Rata-rata Debt Ratio: {avg_debt_ratio}",
+            f"Rata-rata Debt Ratio: {avg_debt_ratio * 100:.0f}%",
             styles["Normal"]
         )
     )
 
     content.append(
         Paragraph(
-            f"Rata-rata Saving Rate: {avg_saving_rate}",
+            f"Rata-rata Saving Rate: {avg_saving_rate * 100:.0f}%",
             styles["Normal"]
         )
     )

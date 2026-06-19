@@ -1,173 +1,129 @@
 import streamlit as st
+import os
+from PIL import Image
+from db import get_prediction_history
+from ui_style import apply_ui_style, inject_custom_sidebar, render_page_hero
 
-st.set_page_config(page_title="Profile - FINWISE", page_icon="👤", layout="centered")
+st.set_page_config(page_title="Profile - FINWISE", page_icon="👤", layout="wide", initial_sidebar_state="expanded")
+apply_ui_style()
+inject_custom_sidebar()
 
-
-from db import (
-    get_dashboard_stats
-)
-
-if not st.session_state.get("logged_in"):
+if "logged_in" not in st.session_state or not st.session_state["logged_in"]:
     st.warning("Silakan login terlebih dahulu.")
-    st.stop()
+    st.switch_page("pages/2_Login.py")
 
-
-
-st.markdown('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap">', unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-    /* Font Global Inter */
-    html, body, [class*="css"], .stMarkdown, p, label {
-        font-family: 'Inter', 'Segoe UI', sans-serif !important;
-    }
-    
-    div.stButton > button:first-child {
-        background-color: #EF4444;
-        color: white;
-        border-radius: 10px;
-        padding: 0.5rem 2rem;
-        font-weight: 600;
-        font-size: 14px;
-        border: none;
-        box-shadow: 0px 4px 12px rgba(239, 68, 68, 0.2);
-        transition: all 0.3s ease;
-        width: 100%;
-        margin-top: 20px;
-    }
-    div.stButton > button:first-child:hover {
-        background-color: #DC2626;
-        box-shadow: 0px 6px 18px rgba(220, 38, 38, 0.4);
-        transform: translateY(-1px);
-    }
-    
-    /* Header Container */
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 25px;
-    }
-    .main-title {
-        color: var(--text-color); /* Otomatis Putih di Dark, Hitam di Light */
-        font-size: 32px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        margin: 0;
-    }
-    
-    /* Section Title Standardizer */
-    .section-title-container {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 20px;
-        margin-bottom: 15px;
-    }
-    .section-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--text-color); 
-        opacity: 0.9;
-        margin: 0;
-    }
-    
-    .profile-card {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        background-color: var(--secondary-background-color);
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 1px solid rgba(128, 128, 128, 0.2); 
-        margin-bottom: 25px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    .profile-info h2 {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--text-color);
-        margin: 0;
-    }
-    .profile-info p {
-        font-size: 14px;
-        color: var(--text-color);
-        opacity: 0.7; 
-        margin: 4px 0 0 0;
-    }
-    
-    .dynamic-svg {
-        stroke: var(--text-color);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <div class="profile-header">
-        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#3B82F6"/> 
-            <path d="M2 17L12 22L22 17" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h1 class="main-title">User Profile</h1>
-    </div>
-""", unsafe_allow_html=True)
+render_page_hero("👤", "User Profile", "Kelola informasi akun dan preferensi personal Anda.")
 
 user_id = st.session_state["user_id"]
-stats = get_dashboard_stats(user_id)
+name = st.session_state["user_name"]
+email = st.session_state["email"]
 
-st.markdown(f"""
-    <div class="profile-card">
-        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="#3B82F6" fill-opacity="0.2"/>
-            <path d="M12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 19v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="profile-info">
-            <h2>{st.session_state["user_name"]}</h2>
-            <p>Email: {st.session_state['email']}</p>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
+# Get stats
+hist = get_prediction_history()
+user_hist = [h for h in hist if h['user_id'] == user_id]
+total_assessments = len(user_hist)
 
-st.markdown("""
-    <div class="section-title-container">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"></line>
-            <line x1="12" y1="20" x2="12" y2="4"></line>
-            <line x1="6" y1="20" x2="6" y2="14"></line>
-        </svg>
-        <h2 class="section-title">Akumulasi Aktivitas Finansial</h2>
-    </div>
-""", unsafe_allow_html=True)
+# Handle Profile Picture
+avatar_path = f"assets/profile_{user_id}.png"
+default_avatar = f"https://ui-avatars.com/api/?name={name.replace(' ', '+')}&background=00A99D&color=fff&size=150"
 
-col1, col2, col3 = st.columns(3)
+import time
 
-col1.metric(
-    "Total Analisis",
-    stats["total_analysis"]
-)
+st.html("""
+<style>
+    /* Premium Glassmorphism Cards */
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 20px !important;
+        border: 1px solid rgba(89, 218, 205, 0.25) !important;
+        background: linear-gradient(145deg, rgba(14,27,45,0.7) 0%, rgba(10,20,35,0.9) 100%) !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important;
+        backdrop-filter: blur(12px) !important;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    [data-testid="stVerticalBlockBorderWrapper"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 45px rgba(89, 218, 205, 0.15) !important;
+    }
+    
+    /* Style for Information text */
+    .profile-label {
+        font-size: 13px;
+        color: #8da1b9;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .profile-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 16px;
+    }
+</style>
+""")
 
-col2.metric(
-    "Avg Debt Ratio",
-    round(stats["avg_debt_ratio"], 2)
-)
+st.markdown("<br>", unsafe_allow_html=True)
 
-col3.metric(
-    "Avg Saving Rate",
-    round(stats["avg_saving_rate"], 2)
-)
+# Center the layout with modern proportions
+_, col_left, col_right, _ = st.columns([0.5, 1.2, 1.6, 0.5], gap="large")
 
-st.divider()
+with col_left:
+    with st.container(border=True):
+        st.markdown("<h3 style='text-align: center; color: #59dacd; margin-bottom: 20px; border-bottom: 1px solid rgba(89,218,205,0.2); padding-bottom: 10px;'>Informasi Pribadi</h3>", unsafe_allow_html=True)
+        
+        # Center image perfectly
+        c1, c2, c3 = st.columns([1, 2.5, 1])
+        with c2:
+            if os.path.exists(avatar_path):
+                # Ensure the image is rendered round via HTML wrapper
+                avatar_b64 = get_base64_of_bin_file(avatar_path) if "get_base64_of_bin_file" in globals() else ""
+                if avatar_b64:
+                     st.markdown(f'<div style="text-align: center;"><img src="data:image/png;base64,{avatar_b64}" style="border-radius:50%; width:100%; max-width:160px; border:4px solid #59dacd; margin-bottom:20px; box-shadow:0 8px 25px rgba(89,218,205,0.4);"></div>', unsafe_allow_html=True)
+                else:
+                     st.image(avatar_path, use_container_width=True)
+            else:
+                st.markdown(f'<div style="text-align: center;"><img src="{default_avatar}" style="border-radius:50%; width:100%; max-width:160px; border:4px solid #59dacd; margin-bottom:20px; box-shadow:0 8px 25px rgba(89,218,205,0.4);"></div>', unsafe_allow_html=True)
+        
+        # Styled Information
+        st.markdown(f"""
+        <div class="profile-label">Nama Lengkap</div>
+        <div class="profile-value">{name}</div>
+        
+        <div class="profile-label">Email</div>
+        <div class="profile-value">{email}</div>
+        
+        <div class="profile-label">Total Assessment</div>
+        <div class="profile-value" style="color: #59dacd;">{total_assessments} Kali</div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
 
-logout_col1, logout_col2, logout_col3 = st.columns([1, 1, 1])
-with logout_col2:
-    if st.button("🚪 Logout"):
-        st.session_state.clear()
-        st.switch_page("app.py")
-
-st.divider()
-
-st.caption(
-    "FINWISE • AI-Powered Financial Intelligence"
-)
+with col_right:
+    with st.container(border=True):
+        st.markdown("<h3 style='color: #59dacd; margin-bottom: 20px; font-weight: 600; border-bottom: 1px solid rgba(89,218,205,0.2); padding-bottom: 10px;'>Pengaturan Akun</h3>", unsafe_allow_html=True)
+        
+        new_name = st.text_input("Nama Lengkap", value=name)
+        new_pass = st.text_input("Kata Sandi Baru", type="password", placeholder="Kosongkan jika tidak ingin diubah")
+        
+        st.markdown("<div style='margin-top: 25px; margin-bottom: 5px; font-size: 14px; font-weight: 600; color: #dde2f3;'>Foto Profil Baru</div>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Pilih gambar baru", type=["png", "jpg", "jpeg"], label_visibility="collapsed")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # Confirmation Popover for saving
+        with st.popover("Simpan Semua Perubahan", icon=":material/save:", use_container_width=True):
+            st.markdown("<div style='text-align:center; padding: 10px 0;'>Yakin ingin menyimpan pembaruan profil ini?</div>", unsafe_allow_html=True)
+            if st.button("Ya, Simpan Perubahan", use_container_width=True, type="primary"):
+                # Save Image if uploaded
+                if uploaded_file is not None:
+                    os.makedirs("assets", exist_ok=True)
+                    image = Image.open(uploaded_file)
+                    image = image.resize((300, 300))
+                    image.save(avatar_path)
+                
+                # Show beautiful toast alert
+                st.toast("Profil berhasil diperbarui!", icon="✅")
+                
+                # Small delay to let user see the success message
+                time.sleep(1.5)
+                st.rerun()
