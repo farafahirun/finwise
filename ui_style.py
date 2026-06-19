@@ -16,6 +16,10 @@ def apply_ui_style():
         <style>
 
         /* Hide Streamlit Header completely */
+        [data-testid="manage-app-button"] { display: none !important; }
+        [data-testid="stViewerBadge"] { display: none !important; }
+        ._terminalButton_rix23_138 { display: none !important; }
+        .viewerBadge_container__1QSob { display: none !important; }
         
         /* Adjust top padding to look natural without header */
         .block-container {{

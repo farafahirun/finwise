@@ -190,10 +190,19 @@ opacity: 0.9 !important;
 /* Responsiveness / Mobile Optimization */
 @media screen and (max-width: 768px) {
     .landing-nav {
-        padding: 12px 20px;
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .landing-nav > div:nth-child(2) {
+        display: none; /* Hide Beranda, Demo, Fitur on small screens */
     }
     .landing-nav a {
-        margin-left: 10px;
+        margin-left: 8px;
+        font-size: 12px;
+    }
+    .landing-nav .btn-masuk, .landing-nav .btn-daftar {
+        padding: 6px 12px;
         font-size: 12px;
     }
     .hero-section {
