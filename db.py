@@ -16,13 +16,13 @@ def _sanitize_decimals(data):
 import streamlit as st
 import mysql.connector.pooling
 
-@st.cache_resource(ttl=3600)
+@st.cache_resource(ttl=3600, show_spinner=False)
 def get_db_pool():
     try:
         db_secrets = st.secrets["mysql"]
         return mysql.connector.pooling.MySQLConnectionPool(
             pool_name="finwise_pool",
-            pool_size=5,
+            pool_size=2,
             pool_reset_session=True,
             host=db_secrets["host"],
             user=db_secrets["user"],
@@ -34,7 +34,7 @@ def get_db_pool():
     except Exception:
         return mysql.connector.pooling.MySQLConnectionPool(
             pool_name="finwise_pool_local",
-            pool_size=5,
+            pool_size=2,
             pool_reset_session=True,
             host="localhost",
             user="finwise",
