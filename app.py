@@ -5,10 +5,6 @@ from db import save_prediction
 from pathlib import Path
 from ui_style import apply_ui_style, inject_custom_sidebar, get_base64_of_bin_file
 
-BASE_DIR = Path(__file__).resolve().parent
-model_path = BASE_DIR / "models" / "random_forest.pkl"
-model = joblib.load(model_path)
-
 st.set_page_config(
     page_title="FINWISE - Kecerdasan Finansial Didukung AI",
     page_icon="💎",
@@ -17,6 +13,14 @@ st.set_page_config(
 )
 
 apply_ui_style()
+
+@st.cache_resource(show_spinner=False)
+def load_model():
+    BASE_DIR = Path(__file__).resolve().parent
+    model_path = BASE_DIR / "models" / "random_forest.pkl"
+    return joblib.load(model_path)
+
+model = load_model()
 
 if st.session_state.get("logged_in"):
     st.switch_page("pages/2_Dashboard.py")

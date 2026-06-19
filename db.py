@@ -14,24 +14,38 @@ def _sanitize_decimals(data):
 
 
 import streamlit as st
+import mysql.connector.pooling
 
-def get_connection():
+@st.cache_resource(ttl=3600)
+def get_db_pool():
     try:
         db_secrets = st.secrets["mysql"]
-        return mysql.connector.connect(
+        return mysql.connector.pooling.MySQLConnectionPool(
+            pool_name="finwise_pool",
+            pool_size=5,
+            pool_reset_session=True,
             host=db_secrets["host"],
             user=db_secrets["user"],
             password=db_secrets["password"],
             database=db_secrets["database"],
-            port=db_secrets.get("port", 3306)
+            port=db_secrets.get("port", 3306),
+            connect_timeout=10
         )
     except Exception:
-        return mysql.connector.connect(
+        return mysql.connector.pooling.MySQLConnectionPool(
+            pool_name="finwise_pool_local",
+            pool_size=5,
+            pool_reset_session=True,
             host="localhost",
             user="finwise",
             password="finwise123",
-            database="finwise"
+            database="finwise",
+            connect_timeout=10
         )
+
+def get_connection():
+    pool = get_db_pool()
+    return pool.get_connection()
 
 def save_prediction(
     user_id,
