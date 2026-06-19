@@ -39,7 +39,19 @@ def generate_report(
     history_text,
     ai_summary="",
     monthly_review_text="",
-    ai_monthly_review=""
+    ai_monthly_review="",
+    coaching_report_text="",
+    forecast_report_text="",
+    budget_report_text="",
+    behavior_report_text="",
+    habit_report_text="",
+    challenge_report_text="",
+    xp_report_text="",
+    roadmap_report_text="",
+    investment_report_text="",
+    learning_report_text="",
+    simulation_report_text="",
+    persona_report_text=""
 ):
 
     doc = SimpleDocTemplate(filename)
@@ -133,6 +145,102 @@ def generate_report(
             content,
             "AI Monthly Review",
             ai_monthly_review,
+            styles
+        )
+
+    if coaching_report_text:
+        _add_text_block(
+            content,
+            "AI Coaching Report",
+            coaching_report_text,
+            styles
+        )
+
+    if forecast_report_text:
+        _add_text_block(
+            content,
+            "Financial Forecast & Insight",
+            forecast_report_text,
+            styles
+        )
+
+    if budget_report_text:
+        _add_text_block(
+            content,
+            "Smart Budgeting Summary",
+            budget_report_text,
+            styles
+        )
+
+    if behavior_report_text:
+        _add_text_block(
+            content,
+            "Financial Behavior Analysis",
+            behavior_report_text,
+            styles
+        )
+
+    if habit_report_text:
+        _add_text_block(
+            content,
+            "Financial Habit Tracking",
+            habit_report_text,
+            styles
+        )
+
+    if challenge_report_text:
+        _add_text_block(
+            content,
+            "Financial Challenge Summary",
+            challenge_report_text,
+            styles
+        )
+
+    if xp_report_text:
+        _add_text_block(
+            content,
+            "Financial XP & Level Summary",
+            xp_report_text,
+            styles
+        )
+
+    if roadmap_report_text:
+        _add_text_block(
+            content,
+            "Financial Roadmap Summary",
+            roadmap_report_text,
+            styles
+        )
+
+    if investment_report_text:
+        _add_text_block(
+            content,
+            "Investment Readiness Summary",
+            investment_report_text,
+            styles
+        )
+
+    if learning_report_text:
+        _add_text_block(
+            content,
+            "Financial Learning Summary",
+            learning_report_text,
+            styles
+        )
+
+    if simulation_report_text:
+        _add_text_block(
+            content,
+            "Simulation Analysis Report",
+            simulation_report_text,
+            styles
+        )
+
+    if persona_report_text:
+        _add_text_block(
+            content,
+            "Financial Persona Report",
+            persona_report_text,
             styles
         )
 

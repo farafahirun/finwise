@@ -25,13 +25,54 @@ from debt_reduction import (
     get_debt_improvement,
     format_debt_context
 )
+from emergency_fund import calculate_emergency_fund
 from saving_strategy import (
     evaluate_saving_rate,
     analyze_saving_potential,
     get_saving_growth,
     format_saving_context
 )
-from emergency_fund import calculate_emergency_fund
+from coaching_agent import (
+    build_coaching_profile,
+    get_personal_coaching_summary,
+    get_weekly_coaching_plan,
+    get_behavior_analysis,
+    get_strength_weakness,
+    get_next_best_action
+)
+from cashflow_intelligence import (
+    format_forecast_context,
+    get_ai_forecast_insight
+)
+from behavior_analysis import (
+    format_behavior_context,
+    get_ai_behavioral_insight
+)
+from db import (
+    get_all_expenses,
+    get_all_budgets,
+    get_goals
+)
+from habit_tracking import (
+    get_habit_summary,
+    format_habit_context,
+    get_ai_habit_insight
+)
+from xp_engine import (
+    get_user_level_info,
+    get_ai_motivation_insight
+)
+from roadmap_engine import (
+    get_roadmap_summary,
+    format_roadmap_context,
+    get_ai_life_roadmap
+)
+from investment_engine import (
+    get_investment_summary,
+    format_investment_context,
+    get_ai_investment_insight
+)
+from persona_engine import get_persona_summary, format_persona_context
 
 # ======================
 # LOGIN CHECK
@@ -199,7 +240,9 @@ else:
     avg_debt_ratio = f"{df['debt_ratio'].mean()*100:.0f}%"
     avg_saving_rate = f"{df['saving_rate'].mean()*100:.0f}%"
 
-    knowledge_context = load_knowledge()
+    p_sum = get_persona_summary(df, goals)
+    persona_ctx = format_persona_context(p_sum)
+    knowledge_context = load_knowledge() + f"\\n\\n{persona_ctx}"
 
     financial_context = f"""
     Nama Pengguna:
@@ -244,23 +287,147 @@ else:
     {achievement_context}
     """
 
-    if st.button(
-        "📋 Generate Financial Summary"
-    ):
+    # Build Coaching Profile
+    latest_pengeluaran = df.iloc[0].get("pengeluaran_bulanan", 0)
+    latest_tabungan = df.iloc[0].get("total_tabungan", 0)
+    latest_tanggungan = df.iloc[0].get("jumlah_tanggungan", 0)
+    ideal_emergency_fund = calculate_emergency_fund(latest_pengeluaran, latest_tanggungan)
+    
+    emergency_status = "Aman"
+    if latest_tabungan < ideal_emergency_fund:
+        emergency_status = f"Belum Ideal (Butuh: Rp {ideal_emergency_fund:,.0f}, Saat Ini: Rp {latest_tabungan:,.0f})"
 
-        summary_prompt = """
-        Buat ringkasan kondisi keuangan
-        pengguna dalam bahasa Indonesia.
-        Berikan kesimpulan dan saran singkat.
-        """
+    goals_context = ""
+    if goals:
+        for g in goals:
+            g_target = float(g['target_amount'])
+            g_current = float(g['current_amount'])
+            g_progress = (g_current / g_target * 100) if g_target > 0 else 0
+            goals_context += f"- {g['goal_name']}: {g_progress:.1f}%\\n"
+    else:
+        goals_context = "Belum ada target keuangan aktif."
 
-        summary = ask_langchain(
-            summary_context,
-            knowledge_context,
-            summary_prompt
-        )
+    coaching_profile = build_coaching_profile(
+        st.session_state["user_name"],
+        df,
+        health_score,
+        achievement_context,
+        emergency_status,
+        goals_context
+    )
 
-        st.success(summary)
+    st.divider()
+    st.header("🧠 Personal Financial Coach")
+    
+    coach_tabs = st.tabs([
+        "Summary & Action", 
+        "Weekly Plan", 
+        "Behavior Analysis", 
+        "Strength & Weakness",
+        "Forecast Insight",
+        "Habit Tracking Insight",
+        "Motivation Insight",
+        "Life Roadmap",
+        "Investment Insight"
+    ])
+    
+    with coach_tabs[0]:
+        st.subheader("💡 Personal Coaching Summary")
+        if st.button("Generate Coaching Summary"):
+            with st.spinner("Menganalisis profil Anda..."):
+                summary = get_personal_coaching_summary(coaching_profile, knowledge_context)
+                st.info(summary)
+        
+        st.subheader("🎯 Next Best Action")
+        if st.button("Generate Next Best Action"):
+            with st.spinner("Menentukan langkah terbaik..."):
+                action = get_next_best_action(coaching_profile, knowledge_context)
+                st.success(action)
+                
+    with coach_tabs[1]:
+        st.subheader("📅 Weekly Coaching Plan")
+        if st.button("🤖 Generate Weekly Coaching Plan"):
+            with st.spinner("Menyusun rencana 4 minggu..."):
+                plan = get_weekly_coaching_plan(coaching_profile, knowledge_context)
+                st.markdown(plan)
+                
+    with coach_tabs[2]:
+        st.subheader("🔍 Financial Behavior Insight")
+        if st.button("🤖 Generate Behavioral Insight"):
+            with st.spinner("Menganalisis perilaku finansial Anda..."):
+                uid = st.session_state["user_id"]
+                all_exps = get_all_expenses(uid)
+                all_bds = get_all_budgets(uid)
+                gls = get_goals(uid)
+                b_ctx = format_behavior_context(df, all_exps, all_bds, gls)
+                
+                behavior = get_ai_behavioral_insight(b_ctx, knowledge_context)
+                st.markdown(behavior)
+                
+    with coach_tabs[3]:
+        st.subheader("💪 Area Kekuatan & Perbaikan")
+        if st.button("Generate Strength & Weakness"):
+            with st.spinner("Menganalisis kekuatan dan kelemahan..."):
+                sw = get_strength_weakness(coaching_profile, knowledge_context)
+                st.markdown(sw)
+                
+    with coach_tabs[4]:
+        st.subheader("📈 AI Forecast Insight")
+        if st.button("🤖 Generate Forecast Insight"):
+            with st.spinner("Memprediksi masa depan keuangan Anda..."):
+                fc_context = format_forecast_context(df)
+                insight = get_ai_forecast_insight(fc_context, knowledge_context)
+                st.markdown(insight)
+                
+    with coach_tabs[5]:
+        st.subheader("🔥 AI Habit Insight")
+        if st.button("🤖 Generate Habit Insight"):
+            with st.spinner("Menganalisis pola kebiasaan Anda..."):
+                uid = st.session_state["user_id"]
+                all_exps = get_all_expenses(uid)
+                all_bds = get_all_budgets(uid)
+                gls = get_goals(uid)
+                h_sum = get_habit_summary(df, all_bds, all_exps, gls)
+                h_ctx = format_habit_context(h_sum)
+                
+                h_insight = get_ai_habit_insight(h_ctx, knowledge_context)
+                st.markdown(h_insight)
+                
+    with coach_tabs[6]:
+        st.subheader("🎮 AI Motivation Insight")
+        if st.button("🤖 Generate Motivation Insight"):
+            with st.spinner("Merumuskan strategi leveling Anda..."):
+                uid = st.session_state["user_id"]
+                all_exps = get_all_expenses(uid)
+                all_bds = get_all_budgets(uid)
+                gls = get_goals(uid)
+                h_sum_xp = get_habit_summary(df, all_bds, all_exps, gls)
+                level_info = get_user_level_info(uid, streaks=h_sum_xp['streaks'])
+                
+                m_insight = get_ai_motivation_insight(level_info, knowledge_context)
+                st.markdown(m_insight)
+                
+    with coach_tabs[7]:
+        st.subheader("🗺 AI Life Planning Roadmap")
+        if st.button("🤖 Generate Life Roadmap"):
+            with st.spinner("Menyusun rencana kehidupan finansial Anda..."):
+                uid = st.session_state["user_id"]
+                roadmap_sum = get_roadmap_summary(uid)
+                r_ctx = format_roadmap_context(roadmap_sum, df)
+                
+                r_insight = get_ai_life_roadmap(r_ctx, knowledge_context)
+                st.markdown(r_insight)
+                
+    with coach_tabs[8]:
+        st.subheader("📈 AI Investment Readiness Insight")
+        if st.button("🤖 Generate Investment Insight"):
+            with st.spinner("Mengevaluasi tingkat keamanan aset Anda..."):
+                uid = st.session_state["user_id"]
+                inv_sum = get_investment_summary(df, health_score)
+                i_ctx = format_investment_context(inv_sum)
+                
+                i_insight = get_ai_investment_insight(i_ctx, knowledge_context)
+                st.markdown(i_insight)
 
     st.divider()
 
@@ -504,7 +671,9 @@ else:
         {achievement_context}
         """
 
-        knowledge_context = load_knowledge()
+        p_sum = get_persona_summary(df, get_goals(st.session_state["user_id"]))
+        persona_ctx = format_persona_context(p_sum)
+        knowledge_context = load_knowledge() + f"\\n\\n{persona_ctx}"
 
         answer = ask_langchain(
             financial_context,
