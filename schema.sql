@@ -115,7 +115,7 @@ CREATE TABLE `debts` (
   `status` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`debt_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `debts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+  CONSTRAINT `debts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -185,7 +185,7 @@ CREATE TABLE `prediction_history` (
   `predicted_label` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`prediction_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `prediction_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
+  CONSTRAINT `prediction_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`user_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -231,7 +231,7 @@ CREATE TABLE `risk_scores` (
   `rekomendasi` text DEFAULT NULL,
   PRIMARY KEY (`score_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `risk_scores_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+  CONSTRAINT `risk_scores_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,7 +254,7 @@ CREATE TABLE `savings_goals` (
   `status` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`goal_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `savings_goals_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+  CONSTRAINT `savings_goals_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -302,7 +302,7 @@ CREATE TABLE `transactions` (
   `metode_bayar` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=705 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
