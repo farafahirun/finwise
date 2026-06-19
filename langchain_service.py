@@ -6,9 +6,16 @@ from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
+import streamlit as st
+def get_groq_api_key():
+    try:
+        return st.secrets["api"]["groq_key"]
+    except Exception:
+        return os.getenv("GROQ_API_KEY")
+
 llm = ChatGroq(
     model="llama-3.3-70b-versatile",
-    api_key=os.getenv("GROQ_API_KEY"),
+    api_key=get_groq_api_key(),
     temperature=0.5
 )
 

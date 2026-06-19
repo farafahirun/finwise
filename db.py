@@ -13,13 +13,25 @@ def _sanitize_decimals(data):
         return data
 
 
+import streamlit as st
+
 def get_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="finwise",
-        password="finwise123",
-        database="finwise"
-    )
+    try:
+        db_secrets = st.secrets["mysql"]
+        return mysql.connector.connect(
+            host=db_secrets["host"],
+            user=db_secrets["user"],
+            password=db_secrets["password"],
+            database=db_secrets["database"],
+            port=db_secrets.get("port", 3306)
+        )
+    except Exception:
+        return mysql.connector.connect(
+            host="localhost",
+            user="finwise",
+            password="finwise123",
+            database="finwise"
+        )
 
 def save_prediction(
     user_id,
