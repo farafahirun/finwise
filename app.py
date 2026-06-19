@@ -239,6 +239,15 @@ opacity: 0.9 !important;
         padding: 16px;
     }
 }
+
+/* Light Mode Filter Hack */
+body.light-mode {
+    filter: invert(1) hue-rotate(180deg) brightness(1.1);
+    background-color: #FAFAFA !important;
+}
+body.light-mode img, body.light-mode video, body.light-mode svg {
+    filter: invert(1) hue-rotate(180deg);
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -260,7 +269,7 @@ st.markdown(f"""
 <div style="display:flex; align-items:center;">
 <a href="/Login" target="_self" class="btn-masuk">Masuk</a>
 <a href="/Register" target="_self" class="btn-daftar" style="margin-right:16px;">Daftar</a>
-<button style="background:rgba(255,255,255,0.1); border:none; color:#c3c6d2; width:36px; height:36px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="Set Mode (Dark/Light)">
+<button onclick="document.body.classList.toggle('light-mode');" style="background:rgba(255,255,255,0.1); border:none; color:#c3c6d2; width:36px; height:36px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="Set Mode (Dark/Light)">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>

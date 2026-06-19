@@ -27,9 +27,22 @@ def apply_ui_style():
             padding-bottom: 2rem !important;
         }}
         
-        [data-testid="stSidebarNav"] {{
+        [data-testid="stSidebarNav"] {
             display: none !important;
-        }}
+        }
+        
+        /* Light Mode Global Filter Hack */
+        body.light-mode {
+            filter: invert(1) hue-rotate(180deg) brightness(1.05) contrast(1.05);
+            background-color: #F8FAFC !important;
+        }
+        body.light-mode img, body.light-mode video, body.light-mode svg {
+            filter: invert(1) hue-rotate(180deg);
+        }
+        body.light-mode [data-testid="stSidebar"] {
+            background-color: #FFFFFF !important;
+        }
+        
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         html, body, [class*="css"], .stMarkdown, p, label, h1, h2, h3, h4, h5, h6 {{
             font-family: 'Inter', 'Segoe UI', sans-serif !important;
